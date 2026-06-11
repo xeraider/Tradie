@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 /// <summary>
 /// Handles touch input.
@@ -14,7 +15,6 @@ public class TouchManager : MonoBehaviour
 
     private void Awake()
     {
-        
         mainCamera = Camera.main;
         playerInput = GetComponent<PlayerInput>();
 
