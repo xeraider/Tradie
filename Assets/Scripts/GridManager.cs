@@ -15,7 +15,7 @@ public class GridManger : MonoBehaviour
     private float screenWidth, screenHeight, containerWidth, containerHeight, spacingX, spacingY;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         //Defines the dimensions of the screen 
         screenHeight = Camera.main.orthographicSize * 2f;
@@ -39,7 +39,7 @@ public class GridManger : MonoBehaviour
     /// <summary>
     /// Called to Draw the grid of water nodes on the screen.
     /// </summary>
-    void DrawNodes()
+    private void DrawNodes()
     {
         for (int x = 0; x < gridSize; x++)
         {
