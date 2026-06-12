@@ -10,6 +10,7 @@ public class TouchManager : MonoBehaviour
     private Camera mainCamera;
     private PlayerInput playerInput;
 
+    //Input actions for touch
     private InputAction touchPressAction;
     private InputAction touchPositionAction;
 
@@ -22,6 +23,7 @@ public class TouchManager : MonoBehaviour
         touchPressAction = playerInput.actions.FindAction("TouchPress");
         touchPositionAction = playerInput.actions.FindAction("TouchPosition");
 
+        //Errors for debugging touch actions
         Debug.Assert(touchPressAction != null, "TouchPress action not found.");
         Debug.Assert(touchPositionAction != null, "TouchPosition action not found.");
     }
