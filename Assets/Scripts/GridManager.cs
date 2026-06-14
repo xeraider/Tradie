@@ -30,7 +30,7 @@ public class GridManger : MonoBehaviour
         spacingY = containerHeight / (gridSize + 1);
 
         //Sets the sizes of the container and the water nodes
-        waterNodePrefab.transform.localScale = new Vector3(Mathf.Min(containerWidth, containerHeight) / (gridSize * 2), Mathf.Min(containerWidth, containerHeight) / (gridSize * 2), 0f);
+        waterNodePrefab.transform.localScale = new Vector3(Mathf.Min(spacingX, spacingY) / 2f, Mathf.Min(spacingX, spacingY) / 2f, 0f);
 
         //Calls methond to draw nodes
         DrawNodes();
