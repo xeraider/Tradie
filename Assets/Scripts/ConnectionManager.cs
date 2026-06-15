@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ConnectionManager : MonoBehaviour
@@ -65,7 +66,6 @@ public class ConnectionManager : MonoBehaviour
         //checks if connection already exists on the face of the water node
         if (ConnectionExists(currConnection.startWaterNode, currConnection.endWaterNode, currConnection.orientation))
         {
-            Debug.Log("Connection exists");
             return;
         }
 
@@ -115,6 +115,13 @@ public class ConnectionManager : MonoBehaviour
         {
             if ((c.startWaterNode == a || c.endWaterNode == b) && direction == c.orientation)
             {
+                if (c.startWaterNode == a && c.endWaterNode == b && !c.doubleConnection)
+                {
+                    c.doubleConnection = true;
+                    c.Draw();
+                    Debug.Log("Double pipe!");
+                }
+                Debug.Log("Connection already exists!");
                 return true;
             }
         }

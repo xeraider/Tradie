@@ -22,11 +22,11 @@ public class Connection
     /// <summary>
     /// Called to setup the connection and give it values.
     /// </summary>
-    public void Setup(WaterNode a, WaterNode b, Axis orientation)
+    public void Setup(WaterNode a, WaterNode b, Axis o)
     {
         startWaterNode = a;
         endWaterNode = b;
-        axisDirection = direction;
+        orientation = o;
     }
 
     /// <summary>
@@ -37,16 +37,28 @@ public class Connection
         GameObject pipe = new GameObject("Pipe");
 
         LineRenderer lr = pipe.AddComponent<LineRenderer>();
-
+        
         lr.positionCount = 2;
         lr.SetPosition(0, startWaterNode.transform.position);
         lr.SetPosition(1, endWaterNode.transform.position);
+        lr.sortingOrder = 0;
 
-        lr.startWidth = 0.1f;
-        lr.endWidth = 0.1f;
-
+        if (!doubleConnection) 
+        {
+            lr.startWidth = 0.1f;
+            lr.endWidth = 0.1f;
+            lr.startColor = Color.blue;
+            lr.endColor = Color.blue;
+        }
+        else 
+        {
+            lr.startWidth = 0.3f;
+            lr.endWidth = 0.3f;
+            lr.startColor = Color.red;
+            lr.endColor = Color.red;
+        }
+        
         lr.material = new Material(Shader.Find("Sprites/Default"));
-        lr.startColor = Color.red;
-        lr.endColor = Color.blue;
+        
     }
 }

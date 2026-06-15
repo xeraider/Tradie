@@ -446,7 +446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManger
   waterNodePrefab: {fileID: 5888018280056371880, guid: 26c29e583efd0ba45bb893bdcabef316, type: 3}
-  gridSize: 3
+  gridSize: 2
 --- !u!4 &848781513
 Transform:
   m_ObjectHideFlags: 0
