@@ -5,11 +5,11 @@ using UnityEngine;
 /// </summary>
 public class GridManger : MonoBehaviour
 {
-    private int gridSize = 4;
-
     [SerializeField] 
     private GameObject waterNodePrefab;
 
+    [SerializeField]
+    private int gridSize = 4;
 
     // Screen, container and node spacing
     private float screenWidth, screenHeight, containerWidth, containerHeight, spacingX, spacingY;
@@ -45,9 +45,12 @@ public class GridManger : MonoBehaviour
         {
             for (int y = 0; y < gridSize; y++)
             {
-                Vector3 pos =  new Vector3((x + 1) * spacingX - containerWidth / 2, (y + 1) * spacingY - containerHeight / 2, 0f);
+                Vector2 pos =  new Vector2((x + 1) * spacingX - containerWidth / 2, (y + 1) * spacingY - containerHeight / 2);
 
-                GameObject waterNode  = Instantiate(waterNodePrefab, pos, Quaternion.identity);
+                GameObject waterNodeObject  = Instantiate(waterNodePrefab, pos, Quaternion.identity);
+                WaterNode waterNode = waterNodeObject.GetComponent<WaterNode>();
+                waterNode.gridX = x + 1;
+                waterNode.gridY = y + 1;
                 waterNode.name = "waterNode(" + x + ", " + y + ")";
             }
         }
