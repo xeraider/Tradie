@@ -8,6 +8,7 @@ public class GridManger : MonoBehaviour
     [SerializeField] 
     private GameObject waterNodePrefab;
 
+    // Size of the grid of Water Nodes
     [SerializeField]
     private int gridSize = 4;
 

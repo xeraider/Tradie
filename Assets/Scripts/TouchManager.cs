@@ -9,6 +9,7 @@ public class TouchManager : MonoBehaviour
     [SerializeField]
     private ConnectionManager connections;
 
+    //Camera and player
     private Camera mainCamera;
     private PlayerInput playerInput;
 

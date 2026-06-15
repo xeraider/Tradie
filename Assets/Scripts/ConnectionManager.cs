@@ -1,9 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ConnectionManager : MonoBehaviour
 {
     //The currently selected Water Node
     private WaterNode selectedWaterNode;
+
+    //The currently forming connection
+    private Connection currConnection;
+
+    //List of existing connections
+    private List<Connection> connections = new List<Connection>();
 
     /// <summary>
     /// Called to Select the node from the touch input of a player.
@@ -30,102 +37,87 @@ public class ConnectionManager : MonoBehaviour
             return;
         }
 
+        //Checks and makes sure the connections are not diagonal
+        if (selectedWaterNode.gridX != targetWaterNode.gridX && selectedWaterNode.gridY != targetWaterNode.gridY)
+        {
+            return;
+        }
+
         //Creates the connection and resets the selected node.
         TryConnect(selectedWaterNode, targetWaterNode);
         selectedWaterNode = null;
     }
 
     /// <summary>
-    /// Called to try connect two water nodes.
+    /// Called to try connect two water nodes. The connection will always go from the negative to the positive node position.
     /// </summary>
-    public void TryConnect(WaterNode nodeA, WaterNode nodeB)
+    public void TryConnect(WaterNode a, WaterNode b)
     {
-        //Checks and makes sure the connections are not diagonal
-        if (nodeA.transform.position.x != nodeB.transform.position.x && nodeA.transform.position.y != nodeB.transform.position.y)
+        //connection that is being formed
+        currConnection = new Connection();
+
+        //sets the direction for the current connection
+        currConnection.orientation = GetOrientaion(a, b);
+
+        //orders the nodes according to the direction
+        (currConnection.startWaterNode, currConnection.endWaterNode) = OrderWaterNodes(a, b, currConnection.orientation);
+
+        //checks if connection already exists on the face of the water node
+        if (ConnectionExists(currConnection.startWaterNode, currConnection.endWaterNode, currConnection.orientation))
         {
-            Debug.Log("Pipes cannot connect diagonally");
+            Debug.Log("Connection exists");
             return;
         }
 
-        //Checks the directions of the connection
-        if (nodeA.transform.position.x != nodeB.transform.position.x)
-        {
-            //Checks left and right
-            if (nodeA.transform.position.x > nodeB.transform.position.x)
-            {
-                if (nodeA.left != null || nodeB.right != null)
-                {
-                    Debug.Log("Connection already exits.");
-                    return;
-                }
-                //Sets direction inside the nodes
-                nodeA.left = nodeB;
-                nodeB.right = nodeA;
-            }
-            else
-            {
-                if (nodeA.right != null || nodeB.left != null)
-                {
-                    Debug.Log("Connection already exits.");
-                    return;
-                }
-                //Sets direction inside the nodes
-                nodeA.right = nodeB;
-                nodeB.left = nodeA;
-            }
-        }
-        else
-        {
-            //Checks up and down
-            if (nodeA.transform.position.y > nodeB.transform.position.y)
-            {
-                if (nodeA.down != null || nodeB.up != null)
-                {
-                    Debug.Log("Connection already exits.");
-                    return;
-                }
-                //Sets direction inside the nodes
-                nodeA.down = nodeB;
-                nodeB.up = nodeA;
-            }
-            else
-            {
-                if (nodeA.up != null || nodeB.down != null)
-                {
-                    Debug.Log("Connection already exits.");
-                    return;
-                }
-                //Sets direction inside the nodes
-                nodeA.up = nodeB;
-                nodeB.down = nodeA;
-            }
-        }
-        //Draws line representaion.
-        DrawLine(nodeA, nodeB);
-        Debug.Log("Connected " + nodeA.name + " to " + nodeB.name);
+        //creates and adds connection to the list and resets currentconnection
+        connections.Add(currConnection);
+        currConnection.Draw();
+        Debug.Log("Connected " + a.name + " to " + b.name);
+        currConnection = null;
     }
 
     /// <summary>
-    /// Called to draw a line between two nodes to represent a connection
+    /// Called to get the orientation of a connection.
     /// </summary>
-    private void DrawLine(WaterNode nodeA, WaterNode nodeB)
+    private Connection.Axis GetOrientaion(WaterNode a, WaterNode b)
     {
-        //Create game object for pipe
-        GameObject pipe = new GameObject("Pipe");
+        if (a.gridX != b.gridX)
+        {
+            return Connection.Axis.Horizontal;
+        }
+        return Connection.Axis.Vertical;
+    }
 
-        //Line renderer draws the line which 
-        LineRenderer lr = pipe.AddComponent<LineRenderer>();
+    /// <summary>
+    /// Called to order the water nodes according to direction.
+    /// </summary>
+    private (WaterNode, WaterNode) OrderWaterNodes(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    {
+        //horizontal or vertical
+        if (orientaion == Connection.Axis.Horizontal) 
+        {
+            //sets the higher value to a
+            return (a.gridX > b.gridX) ? (b, a) : (a, b);
+        }
+        else
+        {
+            //sets the higher value to a
+            return (a.gridY > b.gridY) ? (b, a) : (a, b);
+        }
+    }
 
-        lr.positionCount = 2;
-
-        lr.SetPosition(0, new Vector2(nodeA.transform.position.x, nodeA.transform.position.y));
-        lr.SetPosition(1, new Vector2(nodeB.transform.position.x, nodeB.transform.position.y));
-
-        lr.startWidth = 0.1f;
-        lr.endWidth = 0.1f;
-
-        lr.material = new Material(Shader.Find("Sprites/Default"));
-        lr.startColor = Color.red;
-        lr.endColor = Color.blue;
+    /// <summary>
+    /// Called to see if there is already a connection that exists.
+    /// </summary>
+    private bool ConnectionExists(WaterNode a, WaterNode b, Connection.Axis direction)
+    {
+        foreach (Connection c in connections) 
+        {
+            if ((c.startWaterNode == a || c.endWaterNode == b) && direction == c.orientation)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
