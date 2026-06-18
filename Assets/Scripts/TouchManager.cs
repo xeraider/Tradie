@@ -52,10 +52,22 @@ public class TouchManager : MonoBehaviour
 
         // Finds the node that is tapped
         Collider2D target = Physics2D.OverlapPoint(touchPosition);
-        //Proccesses the node selection
-        if (target != null)
+
+        //If nothing is selected
+        if (target == null)
         {
-            connections.SelectWaterNode(target.gameObject.GetComponent<WaterNode>());
+            connections.SelectWaterNode(null);
+            return;
+        }
+
+        //Processes selection
+        if (target.TryGetComponent(out WaterNode waterNode))
+        {
+            connections.SelectWaterNode(waterNode);
+        }
+        else if (target.TryGetComponent(out Connection connection))
+        {
+            connections.TapConnection(connection);
         }
     }
 }

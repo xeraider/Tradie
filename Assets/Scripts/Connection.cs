@@ -27,6 +27,7 @@ public class Connection : MonoBehaviour
         startWaterNode = a;
         endWaterNode = b;
         orientation = o;
+        this.name = a.name + "-" + b.name;
     }
 
     public bool DoubleConnection
@@ -44,6 +45,8 @@ public class Connection : MonoBehaviour
     /// </summary>
     public void Double()
     {
+        //sets new name and changes the width of the connection according to the double connection boolean
+        this.name = startWaterNode.name + "=" + startWaterNode.name;
         Vector3 scale = this.transform.localScale;
 
         if (orientation == Connection.Axis.Horizontal)

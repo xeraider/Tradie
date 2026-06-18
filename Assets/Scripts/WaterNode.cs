@@ -5,11 +5,14 @@ public class WaterNode : MonoBehaviour
     //Grid position
     public int gridX, gridY;
 
-    public void SetUp(string name, int x, int y)
+    /// <summary>
+    /// Called to setup the water node and give it values.
+    /// </summary>
+    public void SetUp(int x, int y)
     {
-        this.name = name;
         gridX = x;
         gridY = y;
+        this.name = "WaterNode(" + x + "," + y + ")";
     }
 }
 

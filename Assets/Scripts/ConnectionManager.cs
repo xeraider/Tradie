@@ -4,6 +4,9 @@ using UnityEngine;
 public class ConnectionManager : MonoBehaviour
 {
     [SerializeField]
+    private GridManger gridManager;
+
+    [SerializeField]
     private GameObject connectionPrefab;
 
     //The currently selected Water Node
@@ -13,7 +16,7 @@ public class ConnectionManager : MonoBehaviour
     private List<Connection> connections = new List<Connection>();
 
     /// <summary>
-    /// Called to Select the node from the touch input of a player.
+    /// Called to select the node from the touch input of a player.
     /// </summary>
     public void SelectWaterNode(WaterNode targetWaterNode)
     {
@@ -50,6 +53,14 @@ public class ConnectionManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Called to select the connection from the touch input of a player.
+    /// </summary>
+    public void TapConnection(Connection targetConnection)
+    {
+        Debug.Log(targetConnection.name + " selected!");
+    }
+
+    /// <summary>
     /// Called to try connect two water nodes. The connection will always go from the negative to the positive node position.
     /// </summary>
     public void TryConnect(WaterNode a, WaterNode b)
@@ -61,6 +72,20 @@ public class ConnectionManager : MonoBehaviour
         (WaterNode, WaterNode) orderedWaterNodes = OrderWaterNodes(a, b, orientation);
         a = orderedWaterNodes.Item1;
         b = orderedWaterNodes.Item2;
+
+        //checks if there are water nodes in the way of the connections
+        if (IsPathBlockedByNode(a, b, orientation))
+        {
+            Debug.Log("Path blocked!");
+            return;
+        }
+
+        //checks if there are water nodes in the way of the connections
+        if (IsPathBlockedByConnection(a, b, orientation))
+        {
+            Debug.Log("Path blocked by connection!");
+            return;
+        }
 
         //checks if connection already exists on the faces of the water node
         if (ConnectionExists(a, b, orientation))
@@ -94,12 +119,12 @@ public class ConnectionManager : MonoBehaviour
         //horizontal or vertical
         if (orientaion == Connection.Axis.Horizontal) 
         {
-            //sets the higher value to a
+            //sets the higher value to the right
             return (a.gridX > b.gridX) ? (b, a) : (a, b);
         }
         else
         {
-            //sets the higher value to a
+            //sets the higher value to the right
             return (a.gridY > b.gridY) ? (b, a) : (a, b);
         }
     }
@@ -107,12 +132,12 @@ public class ConnectionManager : MonoBehaviour
     /// <summary>
     /// Called to see if there is already a connection that exists.
     /// </summary>
-    private bool ConnectionExists(WaterNode a, WaterNode b, Connection.Axis direction)
+    private bool ConnectionExists(WaterNode a, WaterNode b, Connection.Axis orientaion)
     {
         //iterates through a list to show
         foreach (Connection c in connections) 
         {
-            if ((c.startWaterNode == a || c.endWaterNode == b) && direction == c.orientation)
+            if ((c.startWaterNode == a || c.endWaterNode == b) && orientaion == c.orientation)
             {
                 if (c.startWaterNode == a && c.endWaterNode == b && !c.doubleConnection)
                 {
@@ -124,6 +149,64 @@ public class ConnectionManager : MonoBehaviour
                     Debug.Log("Connection already exists!");
                 }
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Called to see if there are water nodes in the way of the connections.
+    /// </summary>
+    private bool IsPathBlockedByNode(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    {
+        //iterates through a grid to check if path blocked
+        if (orientaion == Connection.Axis.Horizontal)
+        {
+            for (int i = a.gridX + 1; i < b.gridX; i++)
+            {
+                if (gridManager.grid[i,a.gridY] != null)
+                {
+                    return true;
+                }
+            }
+        }
+        else if (orientaion == Connection.Axis.Vertical)
+        {
+            for (int i = a.gridY + 1; i < b.gridY; i++)
+            {
+                if (gridManager.grid[a.gridX, i] != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Called to see if there are connections in the way of the connections.
+    /// </summary>
+    private bool IsPathBlockedByConnection(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    {
+        //iterates through a existing connections to check if path blocked by connections
+        if (orientaion == Connection.Axis.Horizontal)
+        {
+            foreach (Connection c in connections)
+            {
+                if (a.gridX < c.startWaterNode.gridX && c.startWaterNode.gridX < b.gridX && c.startWaterNode.gridY < a.gridY && a.gridY < c.endWaterNode.gridY)
+                {
+                    return true;
+                }
+            }
+        }
+        else if (orientaion == Connection.Axis.Vertical)
+        {
+            foreach (Connection c in connections)
+            {
+                if (a.gridY < c.startWaterNode.gridY && c.startWaterNode.gridY < b.gridY && c.startWaterNode.gridX < a.gridX && a.gridX < c.endWaterNode.gridX)
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -154,7 +237,7 @@ public class ConnectionManager : MonoBehaviour
             scale.x = Mathf.Abs(a.transform.position.x - b.transform.position.x) - a.transform.localScale.x;
             scale.y = a.transform.localScale.y * 0.2f;
         }
-        if (orientation == Connection.Axis.Vertical)
+        else if (orientation == Connection.Axis.Vertical)
         {
             scale.y = Mathf.Abs(a.transform.position.y - b.transform.position.y) - a.transform.localScale.y;
             scale.x = a.transform.localScale.x * 0.2f;

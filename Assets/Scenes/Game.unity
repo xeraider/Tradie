@@ -446,7 +446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManger
   waterNodePrefab: {fileID: 5888018280056371880, guid: 26c29e583efd0ba45bb893bdcabef316, type: 3}
-  gridSize: 2
+  gridSize: 5
 --- !u!4 &848781513
 Transform:
   m_ObjectHideFlags: 0
@@ -506,6 +506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1be622315d43c4a8cf9ebd52f74caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Connections
+  gridManager: {fileID: 848781512}
+  connectionPrefab: {fileID: 1009089965283584053, guid: 57387548f156d0746bd8065bc50a8b82, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
