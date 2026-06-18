@@ -1,16 +1,18 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// Manages the grid of water nodes.
 /// </summary>
 public class GridManger : MonoBehaviour
 {
-    [SerializeField] 
+    //Water node prefab
+    [SerializeField]
     private GameObject waterNodePrefab;
 
     // Size of the grid of Water Nodes
     [SerializeField]
-    private int gridSize = 4;
+    private int gridSize = 6;
 
     // Screen, container and node spacing
     private float screenWidth, screenHeight, containerWidth, containerHeight, spacingX, spacingY;
@@ -30,29 +32,27 @@ public class GridManger : MonoBehaviour
         spacingX = containerWidth / (gridSize + 1);
         spacingY = containerHeight / (gridSize + 1);
 
-        //Sets the sizes of the container and the water nodes
-        waterNodePrefab.transform.localScale = new Vector3(Mathf.Min(spacingX, spacingY) / 2f, Mathf.Min(spacingX, spacingY) / 2f, 0f);
-
         //Calls methond to draw nodes
-        DrawNodes();
+        InitialiseGrid();
     }
 
     /// <summary>
     /// Called to Draw the grid of water nodes on the screen.
     /// </summary>
-    private void DrawNodes()
+    private void InitialiseGrid()
     {
         for (int x = 0; x < gridSize; x++)
         {
             for (int y = 0; y < gridSize; y++)
             {
-                Vector2 pos =  new Vector2((x + 1) * spacingX - containerWidth / 2, (y + 1) * spacingY - containerHeight / 2);
+                //position of the water node
+                Vector2 pos = new Vector2((x + 1) * spacingX - containerWidth / 2, (y + 1) * spacingY - containerHeight / 2);
 
-                GameObject waterNodeObject  = Instantiate(waterNodePrefab, pos, Quaternion.identity);
+                //creates the water node
+                GameObject waterNodeObject = Instantiate(waterNodePrefab, pos, Quaternion.identity);
                 WaterNode waterNode = waterNodeObject.GetComponent<WaterNode>();
-                waterNode.gridX = x + 1;
-                waterNode.gridY = y + 1;
-                waterNode.name = "waterNode(" + x + ", " + y + ")";
+                waterNode.transform.localScale = new Vector3(Mathf.Min(spacingX, spacingY) / 2f, Mathf.Min(spacingX, spacingY) / 2f, 0f);
+                waterNode.SetUp("WaterNode(" + x + "," + y + ")", x, y);
             }
         }
     }

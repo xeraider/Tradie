@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ConnectionManager : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject connectionPrefab;
+
     //The currently selected Water Node
     private WaterNode selectedWaterNode;
-
-    //The currently forming connection
-    private Connection currConnection;
 
     //List of existing connections
     private List<Connection> connections = new List<Connection>();
@@ -41,6 +40,7 @@ public class ConnectionManager : MonoBehaviour
         //Checks and makes sure the connections are not diagonal
         if (selectedWaterNode.gridX != targetWaterNode.gridX && selectedWaterNode.gridY != targetWaterNode.gridY)
         {
+            selectedWaterNode = null;
             return;
         }
 
@@ -54,32 +54,30 @@ public class ConnectionManager : MonoBehaviour
     /// </summary>
     public void TryConnect(WaterNode a, WaterNode b)
     {
-        //connection that is being formed
-        currConnection = new Connection();
+        //orientation of the connection
+        Connection.Axis orientation = GetOrientation(a, b);
 
-        //sets the direction for the current connection
-        currConnection.orientation = GetOrientaion(a, b);
+        //connecting water nodes that have been ordered by position
+        (WaterNode, WaterNode) orderedWaterNodes = OrderWaterNodes(a, b, orientation);
+        a = orderedWaterNodes.Item1;
+        b = orderedWaterNodes.Item2;
 
-        //orders the nodes according to the direction
-        (currConnection.startWaterNode, currConnection.endWaterNode) = OrderWaterNodes(a, b, currConnection.orientation);
-
-        //checks if connection already exists on the face of the water node
-        if (ConnectionExists(currConnection.startWaterNode, currConnection.endWaterNode, currConnection.orientation))
+        //checks if connection already exists on the faces of the water node
+        if (ConnectionExists(a, b, orientation))
         {
             return;
         }
 
-        //creates and adds connection to the list and resets currentconnection
-        connections.Add(currConnection);
-        currConnection.Draw();
+        //add connection to the existing connections list
+        Connection c = InitialiseConnection(a, b, orientation);
+        connections.Add(c);
         Debug.Log("Connected " + a.name + " to " + b.name);
-        currConnection = null;
     }
 
     /// <summary>
     /// Called to get the orientation of a connection.
     /// </summary>
-    private Connection.Axis GetOrientaion(WaterNode a, WaterNode b)
+    private Connection.Axis GetOrientation(WaterNode a, WaterNode b)
     {
         if (a.gridX != b.gridX)
         {
@@ -111,20 +109,59 @@ public class ConnectionManager : MonoBehaviour
     /// </summary>
     private bool ConnectionExists(WaterNode a, WaterNode b, Connection.Axis direction)
     {
+        //iterates through a list to show
         foreach (Connection c in connections) 
         {
             if ((c.startWaterNode == a || c.endWaterNode == b) && direction == c.orientation)
             {
                 if (c.startWaterNode == a && c.endWaterNode == b && !c.doubleConnection)
                 {
-                    c.doubleConnection = true;
-                    c.Draw();
-                    Debug.Log("Double pipe!");
+                    c.DoubleConnection = true;
+                    Debug.Log("Double pipes!");
                 }
-                Debug.Log("Connection already exists!");
+                else
+                {
+                    Debug.Log("Connection already exists!");
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    /// <summary>
+    /// Called to initialise the connection
+    /// </summary>
+    private Connection InitialiseConnection(WaterNode a, WaterNode b, Connection.Axis orientation)
+    {
+        //position of the connection
+        Vector2 pos = (a.transform.position + b.transform.position) / 2f;
+
+        //creates connection
+        GameObject connectionObject = Instantiate(connectionPrefab, pos, Quaternion.identity);
+        Connection c = connectionObject.GetComponent<Connection>();
+
+        //Set up for connection
+        c.Setup(a, b, orientation);
+
+        //gets the curent scale of the connection
+        Vector3 scale = c.transform.localScale;
+        scale.z = 0;
+
+        //sets the size according to the orientation and if its double or single pipe
+        if (orientation == Connection.Axis.Horizontal)
+        {
+            scale.x = Mathf.Abs(a.transform.position.x - b.transform.position.x) - a.transform.localScale.x;
+            scale.y = a.transform.localScale.y * 0.2f;
+        }
+        if (orientation == Connection.Axis.Vertical)
+        {
+            scale.y = Mathf.Abs(a.transform.position.y - b.transform.position.y) - a.transform.localScale.y;
+            scale.x = a.transform.localScale.x * 0.2f;
+            
+        }
+        c.transform.localScale = scale;
+
+        return c;
     }
 }

@@ -1,7 +1,7 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class Connection
+public class Connection : MonoBehaviour
 {
     //Enum for the direction
     public enum Axis
@@ -29,36 +29,32 @@ public class Connection
         orientation = o;
     }
 
-    /// <summary>
-    /// Called to draw a line between two nodes to represent a connection
-    /// </summary>
-    public void Draw()
+    public bool DoubleConnection
     {
-        GameObject pipe = new GameObject("Pipe");
-
-        LineRenderer lr = pipe.AddComponent<LineRenderer>();
-        
-        lr.positionCount = 2;
-        lr.SetPosition(0, startWaterNode.transform.position);
-        lr.SetPosition(1, endWaterNode.transform.position);
-        lr.sortingOrder = 0;
-
-        if (!doubleConnection) 
+        get => doubleConnection;
+        set
         {
-            lr.startWidth = 0.1f;
-            lr.endWidth = 0.1f;
-            lr.startColor = Color.blue;
-            lr.endColor = Color.blue;
+            doubleConnection = value;
+            Double();
         }
-        else 
+    }
+
+    /// <summary>
+    /// Called to update the sprite when doubled.
+    /// </summary>
+    public void Double()
+    {
+        Vector3 scale = this.transform.localScale;
+
+        if (orientation == Connection.Axis.Horizontal)
         {
-            lr.startWidth = 0.3f;
-            lr.endWidth = 0.3f;
-            lr.startColor = Color.red;
-            lr.endColor = Color.red;
+            scale.y = this.doubleConnection ? startWaterNode.transform.localScale.y * 0.4f : startWaterNode.transform.localScale.y * 0.2f;
         }
-        
-        lr.material = new Material(Shader.Find("Sprites/Default"));
-        
+        if (orientation == Connection.Axis.Vertical)
+        {
+            scale.x = this.doubleConnection ? startWaterNode.transform.localScale.x * 0.4f : startWaterNode.transform.localScale.x * 0.2f;
+        }
+
+        this.transform.localScale = scale;
     }
 }
