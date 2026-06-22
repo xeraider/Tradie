@@ -12,26 +12,22 @@ public class GridManger : MonoBehaviour
 
     // Size of the grid of Water Nodes
     [SerializeField]
-    private int gridSize = 5;
+    private int gridSize = 4;
 
     public WaterNode[,] grid;
 
     // Screen, container and node spacing
-    private float screenWidth, screenHeight, containerWidth, containerHeight, spacingX, spacingY;
+    private float spacingX, spacingY;
 
     private void Start()
     {
-        //Defines the dimensions of the screen 
-        screenHeight = Camera.main.orthographicSize * 2f;
-        screenWidth = screenHeight * Screen.width / Screen.height;
-
-        //Defines the water node grid dimensions
-        containerWidth = screenWidth;
-        containerHeight = screenHeight * 0.8f;
+        //Defines the initial camera size according to the grid
+        Camera.main.orthographicSize = gridSize + 2;
+        
 
         //Sets the spacing between the water node spawn points 
-        spacingX = containerWidth / (gridSize + 1);
-        spacingY = containerHeight / (gridSize + 1);
+        spacingX = 2f;
+        spacingY = 2f;
 
         //Calls method to create and populate grid
         PopulateGrid();
@@ -49,16 +45,15 @@ public class GridManger : MonoBehaviour
         {
             for (int y = 0; y < gridSize; y++)
             {
-                // Spawns node 60% of the time
-                if (Random.Range(0,1f) > 0.4f)
+                //spawns node 70 % of the time
+                if (Random.Range(0, 1f) > 0.3f)
                 {
                     //position of the water node
-                    Vector2 pos = new Vector2((x + 1) * spacingX - containerWidth / 2, (y + 1) * spacingY - containerHeight / 2);
+                    Vector2 pos = new Vector2((x - (gridSize - 1) / 2f) * spacingX, (y - (gridSize - 1) / 2f) * spacingY);
 
                     //creates the water node
                     GameObject waterNodeObject = Instantiate(waterNodePrefab, pos, Quaternion.identity);
                     WaterNode waterNode = waterNodeObject.GetComponent<WaterNode>();
-                    waterNode.transform.localScale = new Vector3(Mathf.Min(spacingX, spacingY) / 2f, Mathf.Min(spacingX, spacingY) / 2f, 0f);
                     waterNode.SetUp(x, y);
 
                     //Add water node to grid
@@ -66,10 +61,9 @@ public class GridManger : MonoBehaviour
                 }
                 else
                 {
-                    //Add empty node
+                    //add empty node
                     grid[x, y] = null;
                 }
-                
             }
         }
     }

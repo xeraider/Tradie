@@ -19,6 +19,18 @@ public class Connection : MonoBehaviour
     //Connection count
     public bool doubleConnection;
 
+    private SpriteRenderer sr;
+
+    //Sprites
+    [SerializeField]
+    private Sprite singlePipe, doublePipe;
+
+    void Awake()
+    {
+        sr = this.GetComponent<SpriteRenderer>();
+        sr.sprite = singlePipe;
+    }
+
     /// <summary>
     /// Called to setup the connection and give it values.
     /// </summary>
@@ -30,34 +42,19 @@ public class Connection : MonoBehaviour
         this.name = a.name + "-" + b.name;
     }
 
-    public bool DoubleConnection
-    {
-        get => doubleConnection;
-        set
-        {
-            doubleConnection = value;
-            Double();
-        }
-    }
-
     /// <summary>
     /// Called to update the sprite when doubled.
     /// </summary>
     public void Double()
     {
+        doubleConnection = true;
+
+        sr = this.GetComponent<SpriteRenderer>();
+        sr.size = new Vector2(sr.size.x, 0.5f);
+
+        sr.sprite = doublePipe;
+
         //sets new name and changes the width of the connection according to the double connection boolean
         this.name = startWaterNode.name + "=" + startWaterNode.name;
-        Vector3 scale = this.transform.localScale;
-
-        if (orientation == Connection.Axis.Horizontal)
-        {
-            scale.y = this.doubleConnection ? startWaterNode.transform.localScale.y * 0.4f : startWaterNode.transform.localScale.y * 0.2f;
-        }
-        if (orientation == Connection.Axis.Vertical)
-        {
-            scale.x = this.doubleConnection ? startWaterNode.transform.localScale.x * 0.4f : startWaterNode.transform.localScale.x * 0.2f;
-        }
-
-        this.transform.localScale = scale;
     }
 }

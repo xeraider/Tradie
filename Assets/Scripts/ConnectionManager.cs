@@ -141,7 +141,7 @@ public class ConnectionManager : MonoBehaviour
             {
                 if (c.startWaterNode == a && c.endWaterNode == b && !c.doubleConnection)
                 {
-                    c.DoubleConnection = true;
+                    c.Double();
                     Debug.Log("Double pipes!");
                 }
                 else
@@ -220,30 +220,29 @@ public class ConnectionManager : MonoBehaviour
         //position of the connection
         Vector2 pos = (a.transform.position + b.transform.position) / 2f;
 
+        Quaternion pipeOrientation;
+        float pipeLength;
+
+        //sets pipe orientation and length
+        if (orientation == Connection.Axis.Vertical)
+        {
+            pipeOrientation = Quaternion.Euler(0, 0, 90);
+            pipeLength = b.gridY - a.gridY;
+        }
+        else {
+            pipeOrientation = Quaternion.identity;
+            pipeLength = b.gridX - a.gridX;
+        }
+
+        Debug.Log(pipeLength);
+
         //creates connection
-        GameObject connectionObject = Instantiate(connectionPrefab, pos, Quaternion.identity);
+        GameObject connectionObject = Instantiate(connectionPrefab, pos, pipeOrientation);
         Connection c = connectionObject.GetComponent<Connection>();
+        c.GetComponent<SpriteRenderer>().size = new Vector2(pipeLength * 2 - 1, 0.25f);
 
         //Set up for connection
         c.Setup(a, b, orientation);
-
-        //gets the curent scale of the connection
-        Vector3 scale = c.transform.localScale;
-        scale.z = 0;
-
-        //sets the size according to the orientation and if its double or single pipe
-        if (orientation == Connection.Axis.Horizontal)
-        {
-            scale.x = Mathf.Abs(a.transform.position.x - b.transform.position.x) - a.transform.localScale.x;
-            scale.y = a.transform.localScale.y * 0.2f;
-        }
-        else if (orientation == Connection.Axis.Vertical)
-        {
-            scale.y = Mathf.Abs(a.transform.position.y - b.transform.position.y) - a.transform.localScale.y;
-            scale.x = a.transform.localScale.x * 0.2f;
-            
-        }
-        c.transform.localScale = scale;
 
         return c;
     }
