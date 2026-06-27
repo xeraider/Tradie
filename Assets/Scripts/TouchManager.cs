@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 /// <summary>
 /// Handles touch input.
@@ -9,48 +10,87 @@ public class TouchManager : MonoBehaviour
     [SerializeField]
     private ConnectionManager connections;
 
-    //Camera and player
-    private Camera mainCamera;
+    [SerializeField]
+    private CameraManager cameraManager;
+
+    //player
     private PlayerInput playerInput;
 
-    //Input actions for touch
-    private InputAction touchPressAction;
-    private InputAction touchPositionAction;
+    //input actions for touch
+    private InputAction touchPressAction, touchPosition1Action;
+
+    //bool to check if the fingers are in a pinching motion
+    private bool isPinching;
+
+    //previous distance between the two fingers
+    private float previousDistance;
 
     private void Awake()
     {
-        mainCamera = Camera.main;
         playerInput = GetComponent<PlayerInput>();
 
-        // Get input actions from Input System
+        //get input actions from Input System
         touchPressAction = playerInput.actions.FindAction("TouchPress");
-        touchPositionAction = playerInput.actions.FindAction("TouchPosition");
+        touchPosition1Action = playerInput.actions.FindAction("TouchPosition1");
 
-        //Errors for debugging touch actions
+        //errors for debugging touch actions
         Debug.Assert(touchPressAction != null, "TouchPress action not found.");
-        Debug.Assert(touchPositionAction != null, "TouchPosition action not found.");
+        Debug.Assert(touchPosition1Action != null, "TouchPositionAction action not found.");
+    }
+
+    private void Update()
+    {
+        //need two active touches
+        if (Touch.activeTouches.Count < 2)
+        {
+            isPinching = false;
+            return;
+        }
+
+        //sets position of two fingers
+        Vector2 touchPosition1 = Touch.activeTouches[0].screenPosition;
+        Vector2 touchPosition2 = Touch.activeTouches[1].screenPosition;
+
+        //distance between touch positions
+        float currentDistance = Vector2.Distance(touchPosition1, touchPosition2);
+
+        //if its not pinching return
+        if (!isPinching)
+        {
+            isPinching = true;
+            previousDistance = currentDistance;
+            return;
+        }
+
+        //delta difference tracking change in distance between two fingers
+        float delta = currentDistance - previousDistance;
+        previousDistance = currentDistance;
+
+        //apply delta to the camera zoom
+        cameraManager.ApplyZoom(delta);
     }
 
     private void OnEnable()
     {
-        touchPressAction.performed += TouchPressed;
+        touchPressAction.started += Press;
+
     }
 
     private void OnDisable()
     {
-        touchPressAction.performed -= TouchPressed;
+        touchPressAction.started -= Press;
     }
 
     /// <summary>
     /// Called when the screen is tapped.
     /// </summary>
-    private void TouchPressed(InputAction.CallbackContext context)
+    private void Press(InputAction.CallbackContext context)
     {
-        // Convert touch position to world position
-        Vector2 touchPosition = mainCamera.ScreenToWorldPoint(
-            touchPositionAction.ReadValue<Vector2>());
+        //gets the postion of the touch according to the world positions
+        Vector2 touchPosition = cameraManager.mainCamera.ScreenToWorldPoint(
+            touchPosition1Action.ReadValue<Vector2>());
 
-        // Finds the node that is tapped
+        //finds the node that is tapped
         Collider2D target = Physics2D.OverlapPoint(touchPosition);
 
         //If nothing is selected
@@ -60,14 +100,17 @@ public class TouchManager : MonoBehaviour
             return;
         }
 
-        //Processes selection
+        //processes selection
         if (target.TryGetComponent(out WaterNode waterNode))
         {
             connections.SelectWaterNode(waterNode);
+            return;
         }
         else if (target.TryGetComponent(out Connection connection))
         {
             connections.TapConnection(connection);
+            return;
         }
     }
+
 }

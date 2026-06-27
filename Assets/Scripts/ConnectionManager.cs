@@ -9,10 +9,10 @@ public class ConnectionManager : MonoBehaviour
     [SerializeField]
     private GameObject connectionPrefab;
 
-    //The currently selected Water Node
+    //the currently selected Water Node
     private WaterNode selectedWaterNode;
 
-    //List of existing connections
+    //list of existing connections
     private List<Connection> connections = new List<Connection>();
 
     /// <summary>
@@ -55,9 +55,10 @@ public class ConnectionManager : MonoBehaviour
     /// <summary>
     /// Called to select the connection from the touch input of a player.
     /// </summary>
-    public void TapConnection(Connection targetConnection)
+    public void TapConnection(Connection c)
     {
-        Debug.Log(targetConnection.name + " selected!");
+        UpdateConnection(c);
+        selectedWaterNode = null;
     }
 
     /// <summary>
@@ -134,19 +135,20 @@ public class ConnectionManager : MonoBehaviour
     /// </summary>
     private bool ConnectionExists(WaterNode a, WaterNode b, Connection.Axis orientaion)
     {
-        //iterates through a list to show
+        //iterates through a list of connections
         foreach (Connection c in connections) 
         {
+            //if the connection contains the any of the nodes in the correct position and if orientation is the same
             if ((c.startWaterNode == a || c.endWaterNode == b) && orientaion == c.orientation)
             {
-                if (c.startWaterNode == a && c.endWaterNode == b && !c.doubleConnection)
+                //if the exact same connection exists
+                if (c.startWaterNode == a && c.endWaterNode == b)
                 {
-                    c.Double();
-                    Debug.Log("Double pipes!");
+                    UpdateConnection(c);
                 }
                 else
                 {
-                    Debug.Log("Connection already exists!");
+                    Debug.Log("A connection for this water node face already exists!");
                 }
                 return true;
             }
@@ -221,7 +223,7 @@ public class ConnectionManager : MonoBehaviour
         Vector2 pos = (a.transform.position + b.transform.position) / 2f;
 
         Quaternion pipeOrientation;
-        float pipeLength;
+        int pipeLength;
 
         //sets pipe orientation and length
         if (orientation == Connection.Axis.Vertical)
@@ -239,11 +241,29 @@ public class ConnectionManager : MonoBehaviour
         //creates connection
         GameObject connectionObject = Instantiate(connectionPrefab, pos, pipeOrientation);
         Connection c = connectionObject.GetComponent<Connection>();
-        c.GetComponent<SpriteRenderer>().size = new Vector2(pipeLength * 2 - 1, 0.25f);
 
         //Set up for connection
-        c.Setup(a, b, orientation);
+        c.Setup(a, b, orientation, pipeLength);
 
         return c;
+    }
+
+    /// <summary>
+    /// Called to update an existing connection.
+    /// </summary>
+    private void UpdateConnection(Connection c)
+    {
+        //if connection is double then remove the connection
+        if (c.doubleConnection)
+        {
+            Destroy(c.gameObject);
+            connections.Remove(c);
+        }
+        //if connection is single then double the connection
+        else
+        {
+            c.doubleConnection = true;
+            c.UpdateSprite();
+        }
     }
 }

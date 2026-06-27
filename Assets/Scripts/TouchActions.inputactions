@@ -16,9 +16,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TouchPosition",
+                    "name": "TouchPosition1",
                     "type": "Value",
-                    "id": "5180b830-5284-457b-8b9d-e57667693f85",
+                    "id": "a69e4002-9c78-4332-987f-19eccb6195a8",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -39,12 +39,12 @@
                 },
                 {
                     "name": "",
-                    "id": "f1c0bc35-ace6-4d30-936d-5de3da4b6935",
-                    "path": "<Touchscreen>/position",
+                    "id": "8dca90f2-5890-4294-a699-fd01b636c534",
+                    "path": "<Touchscreen>/primaryTouch/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchPosition",
+                    "action": "TouchPosition1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

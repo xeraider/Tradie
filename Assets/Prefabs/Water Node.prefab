@@ -107,6 +107,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterNode
   gridX: 0
   gridY: 0
+  connectionLimit: 0
+  sprites:
+  - {fileID: 8241030667795639492, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -584503316, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -1186309407, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 2071272420, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -2096044656, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1389448158, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1085721460, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -454525842, guid: beb36814167b6b74786464bf71df687a, type: 3}
 --- !u!61 &8713324017904695243
 BoxCollider2D:
   m_ObjectHideFlags: 0
