@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
 
 public class CameraManager : MonoBehaviour
 {
@@ -10,40 +11,35 @@ public class CameraManager : MonoBehaviour
     GridManger grid;
 
     //variables for zoom
-    private float targetZoom, zoomSpeed, minZoom, maxZoom, smooth;
+    private float targetSize, cameraSpeed, minSize, maxSize;
 
     void Awake()
     {
-        //Defines the camera and aspect ratio 
+        //defines the camera and aspect ratio 
         mainCamera = Camera.main;
         float aspectRatio = (float)Screen.width / Screen.height;
 
-        //Defines the minimum and maximum zoom according to the grid
-        maxZoom = (grid.gridSize) / (aspectRatio);
-        minZoom = 3 / aspectRatio;
+        //ets the zoom variables
+        minSize = 3 / aspectRatio;
+        maxSize = grid.gridSize / aspectRatio;
+        targetSize = maxSize;
+        cameraSpeed = 10f;
 
-        //Sets both the camera size and target zoom 
-        mainCamera.orthographicSize = maxZoom;
-        targetZoom = maxZoom;
-
-        //Sets zoom speed or smoothening factor
-        zoomSpeed = 0.03f;
-        smooth = 0.4f;
-    }
-
-    void LateUpdate()
-    {
-        //lerp fn used to smoothly transition camera
-        mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetZoom, smooth * Time.deltaTime);
+        //ets the camera size 
+        mainCamera.orthographicSize = targetSize;
     }
 
     /// <summary>
-    /// Called when the screen is pinched and applies delta from the two finger positions to the camera.
+    /// Called when the touch manager detects pinch to apply camera zoom.
     /// </summary>
     public void ApplyZoom(float delta)
     {
-        //target zoom is set according to the delta
-        targetZoom -= delta * zoomSpeed;
-        targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
+        //sets target size according to the fingers' distance
+        targetSize = mainCamera.orthographicSize;
+        targetSize = targetSize + delta;
+        targetSize = Mathf.Clamp(targetSize, minSize, maxSize);
+
+        //applies delta to camera with smoothening
+        mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetSize, Time.deltaTime * cameraSpeed);
     }
 }

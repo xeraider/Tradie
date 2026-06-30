@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -13,17 +14,13 @@ public class TouchManager : MonoBehaviour
     [SerializeField]
     private CameraManager cameraManager;
 
-    //player
     private PlayerInput playerInput;
 
     //input actions for touch
-    private InputAction touchPressAction, touchPosition1Action;
+    private InputAction touchPressAction, touchPositionAction, touch2PositionAction, touch2ContactAction;
 
-    //bool to check if the fingers are in a pinching motion
-    private bool isPinching;
-
-    //previous distance between the two fingers
-    private float previousDistance;
+    //coroutine for zoom
+    private Coroutine zoomCoroutine;
 
     private void Awake()
     {
@@ -31,54 +28,23 @@ public class TouchManager : MonoBehaviour
 
         //get input actions from Input System
         touchPressAction = playerInput.actions.FindAction("TouchPress");
-        touchPosition1Action = playerInput.actions.FindAction("TouchPosition1");
-
-        //errors for debugging touch actions
-        Debug.Assert(touchPressAction != null, "TouchPress action not found.");
-        Debug.Assert(touchPosition1Action != null, "TouchPositionAction action not found.");
-    }
-
-    private void Update()
-    {
-        //need two active touches
-        if (Touch.activeTouches.Count < 2)
-        {
-            isPinching = false;
-            return;
-        }
-
-        //sets position of two fingers
-        Vector2 touchPosition1 = Touch.activeTouches[0].screenPosition;
-        Vector2 touchPosition2 = Touch.activeTouches[1].screenPosition;
-
-        //distance between touch positions
-        float currentDistance = Vector2.Distance(touchPosition1, touchPosition2);
-
-        //if its not pinching return
-        if (!isPinching)
-        {
-            isPinching = true;
-            previousDistance = currentDistance;
-            return;
-        }
-
-        //delta difference tracking change in distance between two fingers
-        float delta = currentDistance - previousDistance;
-        previousDistance = currentDistance;
-
-        //apply delta to the camera zoom
-        cameraManager.ApplyZoom(delta);
+        touchPositionAction = playerInput.actions.FindAction("TouchPosition");
+        touch2PositionAction = playerInput.actions.FindAction("Touch2Position");
+        touch2ContactAction = playerInput.actions.FindAction("touch2Contact");
     }
 
     private void OnEnable()
     {
         touchPressAction.started += Press;
-
+        touch2ContactAction.started += ZoomStart;
+        touch2ContactAction.canceled += ZoomEnd;
     }
 
     private void OnDisable()
     {
         touchPressAction.started -= Press;
+        touch2ContactAction.started -= ZoomStart;
+        touch2ContactAction.canceled -= ZoomEnd;
     }
 
     /// <summary>
@@ -88,7 +54,7 @@ public class TouchManager : MonoBehaviour
     {
         //gets the postion of the touch according to the world positions
         Vector2 touchPosition = cameraManager.mainCamera.ScreenToWorldPoint(
-            touchPosition1Action.ReadValue<Vector2>());
+            touchPositionAction.ReadValue<Vector2>());
 
         //finds the node that is tapped
         Collider2D target = Physics2D.OverlapPoint(touchPosition);
@@ -113,4 +79,38 @@ public class TouchManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when the finger pinch starts.
+    /// </summary>
+    private void ZoomStart(InputAction.CallbackContext context)
+    {
+        //start the zoom
+        zoomCoroutine = StartCoroutine(ZoomDetection());
+    }
+
+    /// <summary>
+    /// Called when the finger pinch ends.
+    /// </summary>
+    private void ZoomEnd(InputAction.CallbackContext context)
+    {
+        //stop the zoom
+        StopCoroutine(zoomCoroutine);
+    }
+
+    /// <summary>
+    /// Coroutine for the zoom function.
+    /// </summary>
+    IEnumerator ZoomDetection()
+    {
+        float previousDistance = Vector2.Distance(touchPositionAction.ReadValue<Vector2>(), touch2PositionAction.ReadValue<Vector2>()), distance = 0f, delta = 0f;
+
+        while (true) {
+            //gets distance between the two fingers and sends it to the camera manager
+            distance = Vector2.Distance(touchPositionAction.ReadValue<Vector2>(), touch2PositionAction.ReadValue<Vector2>());
+            delta = (previousDistance - distance);
+            cameraManager.ApplyZoom(delta * 0.02f);
+            previousDistance = distance;
+            yield return null;
+        }
+    }
 }
