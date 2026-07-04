@@ -19,6 +19,8 @@ public class TouchManager : MonoBehaviour
     //input actions for touch
     private InputAction touchContactAction, touch2ContactAction, touchPositionAction, touch2PositionAction;
 
+    private Vector2 touchStartPosition;
+
     //coroutine for zoom
     private Coroutine cameraCoroutine;
 
@@ -35,14 +37,12 @@ public class TouchManager : MonoBehaviour
 
     private void OnEnable()
     {
-        touchContactAction.performed += Press;
         touchContactAction.started += TouchStart;
         touchContactAction.canceled += TouchEnd;
     }
 
     private void OnDisable()
     {
-        touchContactAction.performed -= Press;
         touchContactAction.started -= TouchStart;
         touchContactAction.canceled -= TouchEnd;
     }
@@ -50,7 +50,7 @@ public class TouchManager : MonoBehaviour
     /// <summary>
     /// Called when the screen is tapped.
     /// </summary>
-    private void Press(InputAction.CallbackContext context)
+    private void Press()
     {
         //gets the postion of the touch according to the world positions
         Vector2 touchPosition = cameraManager.mainCamera.ScreenToWorldPoint(
@@ -84,6 +84,9 @@ public class TouchManager : MonoBehaviour
     /// </summary>
     private void TouchStart(InputAction.CallbackContext context)
     {
+        //records start touch position
+        touchStartPosition = touchPositionAction.ReadValue<Vector2>();
+
         //start the zoom and pan
         cameraCoroutine = StartCoroutine(TouchDetection());
     }
@@ -95,6 +98,12 @@ public class TouchManager : MonoBehaviour
     {
         //stop the zoom and pan
         StopCoroutine(cameraCoroutine);
+
+        //if finger didnt move past the threshhold then activate press
+        if (Vector2.Distance(touchStartPosition, touchPositionAction.ReadValue<Vector2>()) < 2f)
+        {
+            Press();
+        }
     }
 
     /// <summary>

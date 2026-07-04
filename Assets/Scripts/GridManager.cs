@@ -15,9 +15,6 @@ public class GridManger : MonoBehaviour
     [SerializeField]
     public int gridSize = 4;
 
-    [SerializeField]
-    private GameObject container;
-
     public WaterNode[,] grid;
 
     //screen, container and node spacing

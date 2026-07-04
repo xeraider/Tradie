@@ -75,29 +75,17 @@ public class ConnectionManager : MonoBehaviour
         b = orderedWaterNodes.Item2;
 
         //checks if there are water nodes in the way of the connections
-        if (IsPathBlockedByNode(a, b, orientation))
-        {
-            Debug.Log("Path blocked!");
-            return;
-        }
+        if (IsPathBlockedByNode(a, b, orientation)) return;
 
         //checks if there are water nodes in the way of the connections
-        if (IsPathBlockedByConnection(a, b, orientation))
-        {
-            Debug.Log("Path blocked by connection!");
-            return;
-        }
+        if (IsPathBlockedByConnection(a, b, orientation)) return;
 
         //checks if connection already exists on the faces of the water node
-        if (ConnectionExists(a, b, orientation))
-        {
-            return;
-        }
+        if (ConnectionExists(a, b, orientation)) return;
 
         //add connection to the existing connections list
         Connection c = InitialiseConnection(a, b, orientation);
         connections.Add(c);
-        Debug.Log("Connected " + a.name + " to " + b.name);
     }
 
     /// <summary>
@@ -145,10 +133,6 @@ public class ConnectionManager : MonoBehaviour
                 if (c.startWaterNode == a && c.endWaterNode == b)
                 {
                     UpdateConnection(c);
-                }
-                else
-                {
-                    Debug.Log("A connection for this water node face already exists!");
                 }
                 return true;
             }
@@ -235,8 +219,6 @@ public class ConnectionManager : MonoBehaviour
             pipeOrientation = Quaternion.identity;
             pipeLength = b.gridX - a.gridX;
         }
-
-        Debug.Log(pipeLength);
 
         //creates connection
         GameObject connectionObject = Instantiate(connectionPrefab, pos, pipeOrientation);
