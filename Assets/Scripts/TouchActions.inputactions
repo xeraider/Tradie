@@ -7,9 +7,18 @@
             "id": "bea1e77a-c12d-4226-8b90-a31185d054df",
             "actions": [
                 {
-                    "name": "TouchPress",
+                    "name": "TouchContact",
                     "type": "Button",
                     "id": "e061a70e-640e-4544-a6fd-380b8072d5e6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Touch2Contact",
+                    "type": "Button",
+                    "id": "80943133-d8ed-4494-8836-a378cffcd359",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -32,33 +41,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Touch2Contact",
-                    "type": "Button",
-                    "id": "80943133-d8ed-4494-8836-a378cffcd359",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "c67bf8bc-0505-4faa-a037-bd6ce96181c8",
-                    "path": "<Touchscreen>/Press",
+                    "path": "<Touchscreen>/touch0/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchPress",
+                    "action": "TouchContact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "8dca90f2-5890-4294-a699-fd01b636c534",
-                    "path": "<Touchscreen>/primaryTouch/position",
+                    "path": "<Touchscreen>/touch0/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -78,48 +78,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Two Modifiers",
-                    "id": "f2f29412-0bde-46de-987f-ed5a5a0d122e",
-                    "path": "TwoModifiers",
+                    "name": "",
+                    "id": "3a64e9e8-7be1-404e-b603-753e766a57a1",
+                    "path": "<Touchscreen>/touch1/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Touch2Contact",
-                    "isComposite": true,
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier1",
-                    "id": "8cb81058-8d67-4642-a77d-1ec21370e20e",
-                    "path": "<Touchscreen>/touch0/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Touch2Contact",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "modifier2",
-                    "id": "3aadf72e-225a-48dc-b57d-22722b993558",
-                    "path": "<Touchscreen>/touch1/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Touch2Contact",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "3ca9e86b-3ee1-487d-ae66-13264d925964",
-                    "path": "<Touchscreen>/touch1/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Touch2Contact",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         }

@@ -21,7 +21,7 @@ public class GridManger : MonoBehaviour
     public WaterNode[,] grid;
 
     //screen, container and node spacing
-    private float spacingX, spacingY;
+    public float spacingX, spacingY;
 
     private void Start()
     {
