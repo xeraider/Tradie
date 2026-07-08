@@ -139,7 +139,95 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Water_Node_1
+      name: terminal_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68da72c1b520b7e498084d56bad9ceab
+      internalID: -602977005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_1_selected
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13481a9236cb7bf47842f4180009d61b
+      internalID: -114036723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76dc6e038bb2821458e749f242b31cba
+      internalID: 1357766302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_2_selected
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2040897161c01f4db6869526e3c16e6
+      internalID: -57746024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_3
       rect:
         serializedVersion: 2
         x: 0
@@ -152,16 +240,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 4cc2f01cab50e5270800000000000000
-      internalID: 8241030667795639492
+      spriteID: 93435d974966a3546916038800aae909
+      internalID: 883989167
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_2
+      name: terminal_3_selected
       rect:
         serializedVersion: 2
         x: 32
@@ -176,14 +264,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9c6fdd581e86f2043affbb3c7d57cf44
-      internalID: -584503316
+      spriteID: fe792493610184249b90e8d0cf9d537a
+      internalID: -1039274604
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_3
+      name: terminal_4
       rect:
         serializedVersion: 2
         x: 64
@@ -198,14 +286,36 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fe4f154d4d7315a4da28f7f1f0fef8e3
-      internalID: -1186309407
+      spriteID: 6a8ef55b3a434a44ca5c4ff5992283fe
+      internalID: 1643184280
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_4
+      name: terminal_4_selected
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd875a1a8afa2b14895a4289c4e762eb
+      internalID: -1768997509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_5
       rect:
         serializedVersion: 2
         x: 0
@@ -220,14 +330,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3becfb63dae51614896c248768b33d5f
-      internalID: 2071272420
+      spriteID: 06ff852e58637ac4c88336404e58c3b1
+      internalID: 1083537197
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_5
+      name: terminal_5_selected
       rect:
         serializedVersion: 2
         x: 32
@@ -242,14 +352,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ad4fde372ff36ee48a31539a8b87171f
-      internalID: -2096044656
+      spriteID: 42cf72aeb13250540beca017dd48d4ef
+      internalID: 979991626
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_6
+      name: terminal_6
       rect:
         serializedVersion: 2
         x: 64
@@ -264,14 +374,36 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c2ccb11a92cb0844877559643a9f4e4
-      internalID: 1389448158
+      spriteID: cd4739f71fee2814dbf0bca8251b91c7
+      internalID: 1434176870
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_7
+      name: terminal_6_selected
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91391b4f2cd58444186b9775b016a715
+      internalID: 1436656808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_7
       rect:
         serializedVersion: 2
         x: 0
@@ -286,14 +418,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 879a219ea106f564d9bc5fb7f21ded23
-      internalID: 1085721460
+      spriteID: 16cb7ddc505f21f4988ad751d6d15d59
+      internalID: 1940152864
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_8
+      name: terminal_7_selected
       rect:
         serializedVersion: 2
         x: 32
@@ -308,14 +440,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a69194f819367c84a9d5beae70e0f5f4
-      internalID: -454525842
+      spriteID: 2ed98face467edc458f50ad1dd4cbe99
+      internalID: 197765616
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_Node_Closed
+      name: terminal_8
       rect:
         serializedVersion: 2
         x: 64
@@ -330,39 +462,105 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 416c814d5fbed8f41ac90d2006f2a99c
-      internalID: 136319244
+      spriteID: 57d4cd81d8d44934cbfca521d747f77b
+      internalID: 411075533
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Single_Pipe
+      name: terminal_8_selected
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cedb33de8711a9849b6cd5ece6e68f23
+      internalID: 1096580935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_completed
       rect:
         serializedVersion: 2
         x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 367cf09c61860ff4e94a43667257b377
+      internalID: 1972928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: terminal_completed_selected
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58e8cf0a60a4a604e82d1cc4f721e446
+      internalID: -251250834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: single_pipe
+      rect:
+        serializedVersion: 2
+        x: 64
         y: 24
         width: 32
         height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 2, y: 1, z: 2, w: 1}
+      border: {x: 2, y: 2, z: 2, w: 2}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 38cd92c235bd9c949acbbba60f0b8224
-      internalID: 836345497
+      spriteID: a0022df5262f9dd40ba2fc6a7268a48a
+      internalID: 1316056759
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Double_Pipe
+      name: double_pipe
       rect:
         serializedVersion: 2
-        x: 0
+        x: 64
         y: 8
         width: 32
         height: 16
@@ -374,8 +572,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 045fcd8a64516c4498933e55a5e91e60
-      internalID: -1143387711
+      spriteID: ba9437711637ac54581d7fba7b9419ff
+      internalID: -130978848
       vertices: []
       indices: 
       edges: []
@@ -400,7 +598,6 @@ TextureImporter:
     nameFileIdTable:
       Double_Pipe: -1143387711
       Single_Pipe: 836345497
-      Tradie Spritesheet_11: 1436656808
       Water_Node_1: 8241030667795639492
       Water_Node_2: -584503316
       Water_Node_3: -1186309407
@@ -410,6 +607,26 @@ TextureImporter:
       Water_Node_7: 1085721460
       Water_Node_8: -454525842
       Water_Node_Closed: 136319244
+      double_pipe: -130978848
+      single_pipe: 1316056759
+      terminal_1: -602977005
+      terminal_1_selected: -114036723
+      terminal_2: 1357766302
+      terminal_2_selected: -57746024
+      terminal_3: 883989167
+      terminal_3_selected: -1039274604
+      terminal_4: 1643184280
+      terminal_4_selected: -1768997509
+      terminal_5: 1083537197
+      terminal_5_selected: 979991626
+      terminal_6: 1434176870
+      terminal_6_selected: 1436656808
+      terminal_7: 1940152864
+      terminal_7_selected: 197765616
+      terminal_8: 411075533
+      terminal_8_selected: 1096580935
+      terminal_completed: 1972928
+      terminal_completed_selected: -251250834
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

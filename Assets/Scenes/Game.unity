@@ -278,7 +278,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.07058824, g: 0.07058824, b: 0.078431375, a: 1}
+  m_BackGroundColor: {r: 0.10588236, g: 0.1764706, b: 0.1764706, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -463,7 +463,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridManger
   waterNodePrefab: {fileID: 5888018280056371880, guid: 26c29e583efd0ba45bb893bdcabef316, type: 3}
   gridSize: 5
-  container: {fileID: 0}
   spacingX: 0
   spacingY: 0
 --- !u!4 &848781513

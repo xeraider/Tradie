@@ -56,20 +56,20 @@ public class TouchManager : MonoBehaviour
         Vector2 touchPosition = cameraManager.mainCamera.ScreenToWorldPoint(
             touchPositionAction.ReadValue<Vector2>());
 
-        //finds the node that is tapped
+        //finds the terminal that is tapped
         Collider2D target = Physics2D.OverlapPoint(touchPosition);
 
         //if nothing is selected
         if (target == null)
         {
-            connections.SelectWaterNode(null);
+            connections.SelectTerminal(null);
             return;
         }
 
         //processes selection
-        if (target.TryGetComponent(out WaterNode waterNode))
+        if (target.TryGetComponent(out Terminal terminal))
         {
-            connections.SelectWaterNode(waterNode);
+            connections.SelectTerminal(terminal);
             return;
         }
         else if (target.TryGetComponent(out Connection connection))

@@ -9,47 +9,51 @@ public class ConnectionManager : MonoBehaviour
     [SerializeField]
     private GameObject connectionPrefab;
 
-    //the currently selected Water Node
-    private WaterNode selectedWaterNode;
+    //the currently selected terminal
+    private Terminal selectedTerminal;
 
     //list of existing connections
     private List<Connection> connections = new List<Connection>();
 
     /// <summary>
-    /// Called to select the node from the touch input of a player.
+    /// Called to select the terminal from the touch input of a player.
     /// </summary>
-    public void SelectWaterNode(WaterNode targetWaterNode)
+    public void SelectTerminal(Terminal targetTerminal)
     {
-        //If tapped on empty space then set the unselect the selected node
-        if (targetWaterNode == null)
+        //If tapped on empty space then set the unselect the selected terminal
+        if (targetTerminal == null)
         {
-            selectedWaterNode = null;
+            if (selectedTerminal) selectedTerminal.IsSelected = false;
+            selectedTerminal = null;
             return;
         }
 
-        //If the selected node is the one being tapped on then do nothing
-        if (selectedWaterNode == targetWaterNode)
+        //If the selected terminal is the one being tapped on then do nothing
+        if (selectedTerminal == targetTerminal)
         {
             return;
         }
 
-        //if their is no selected node then set it to the tapped node
-        if (selectedWaterNode == null)
+        //if their is no selected terminal then set it to the tapped terminal
+        if (selectedTerminal == null)
         {
-            selectedWaterNode = targetWaterNode;
+            selectedTerminal = targetTerminal;
+            selectedTerminal.IsSelected = true;
             return;
         }
 
         //Checks and makes sure the connections are not diagonal
-        if (selectedWaterNode.gridX != targetWaterNode.gridX && selectedWaterNode.gridY != targetWaterNode.gridY)
+        if (selectedTerminal.gridX != targetTerminal.gridX && selectedTerminal.gridY != targetTerminal.gridY)
         {
-            selectedWaterNode = null;
+            selectedTerminal.IsSelected = false;
+            selectedTerminal = null;
             return;
         }
 
-        //Creates the connection and resets the selected node.
-        TryConnect(selectedWaterNode, targetWaterNode);
-        selectedWaterNode = null;
+        //Creates the connection and resets the selected terminal.
+        TryConnect(selectedTerminal, targetTerminal);
+        selectedTerminal.IsSelected = false;
+        selectedTerminal = null;
     }
 
     /// <summary>
@@ -58,29 +62,30 @@ public class ConnectionManager : MonoBehaviour
     public void TapConnection(Connection c)
     {
         UpdateConnection(c);
-        selectedWaterNode = null;
+        if (selectedTerminal) selectedTerminal.IsSelected = false;
+        selectedTerminal = null;
     }
 
     /// <summary>
-    /// Called to try connect two water nodes. The connection will always go from the negative to the positive node position.
+    /// Called to try connect two water terminals. The connection will always go from the negative to the positive terminal position.
     /// </summary>
-    public void TryConnect(WaterNode a, WaterNode b)
+    public void TryConnect(Terminal a, Terminal b)
     {
         //orientation of the connection
         Connection.Axis orientation = GetOrientation(a, b);
 
-        //connecting water nodes that have been ordered by position
-        (WaterNode, WaterNode) orderedWaterNodes = OrderWaterNodes(a, b, orientation);
-        a = orderedWaterNodes.Item1;
-        b = orderedWaterNodes.Item2;
+        //connecting water terminals that have been ordered by position
+        (Terminal, Terminal) orderedTerminals = OrderTerminals(a, b, orientation);
+        a = orderedTerminals.Item1;
+        b = orderedTerminals.Item2;
 
-        //checks if there are water nodes in the way of the connections
-        if (IsPathBlockedByNode(a, b, orientation)) return;
+        //checks if there are water terminals in the way of the connections
+        if (IsPathBlockedByTerminal(a, b, orientation)) return;
 
-        //checks if there are water nodes in the way of the connections
+        //checks if there are water terminals in the way of the connections
         if (IsPathBlockedByConnection(a, b, orientation)) return;
 
-        //checks if connection already exists on the faces of the water node
+        //checks if connection already exists on the faces of the water terminal
         if (ConnectionExists(a, b, orientation)) return;
 
         //add connection to the existing connections list
@@ -91,7 +96,7 @@ public class ConnectionManager : MonoBehaviour
     /// <summary>
     /// Called to get the orientation of a connection.
     /// </summary>
-    private Connection.Axis GetOrientation(WaterNode a, WaterNode b)
+    private Connection.Axis GetOrientation(Terminal a, Terminal b)
     {
         if (a.gridX != b.gridX)
         {
@@ -101,9 +106,9 @@ public class ConnectionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called to order the water nodes according to direction.
+    /// Called to order the water terminals according to direction.
     /// </summary>
-    private (WaterNode, WaterNode) OrderWaterNodes(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    private (Terminal, Terminal) OrderTerminals(Terminal a, Terminal b, Connection.Axis orientaion)
     {
         //horizontal or vertical
         if (orientaion == Connection.Axis.Horizontal) 
@@ -121,16 +126,16 @@ public class ConnectionManager : MonoBehaviour
     /// <summary>
     /// Called to see if there is already a connection that exists.
     /// </summary>
-    private bool ConnectionExists(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    private bool ConnectionExists(Terminal a, Terminal b, Connection.Axis orientaion)
     {
         //iterates through a list of connections
         foreach (Connection c in connections) 
         {
-            //if the connection contains the any of the nodes in the correct position and if orientation is the same
-            if ((c.startWaterNode == a || c.endWaterNode == b) && orientaion == c.orientation)
+            //if the connection contains the any of the terminals in the correct position and if orientation is the same
+            if ((c.startTerminal == a || c.endTerminal == b) && orientaion == c.orientation)
             {
                 //if the exact same connection exists
-                if (c.startWaterNode == a && c.endWaterNode == b)
+                if (c.startTerminal == a && c.endTerminal == b)
                 {
                     UpdateConnection(c);
                 }
@@ -141,9 +146,9 @@ public class ConnectionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called to see if there are water nodes in the way of the connections.
+    /// Called to see if there are water terminals in the way of the connections.
     /// </summary>
-    private bool IsPathBlockedByNode(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    private bool IsPathBlockedByTerminal(Terminal a, Terminal b, Connection.Axis orientaion)
     {
         //iterates through a grid to check if path blocked
         if (orientaion == Connection.Axis.Horizontal)
@@ -172,14 +177,14 @@ public class ConnectionManager : MonoBehaviour
     /// <summary>
     /// Called to see if there are connections in the way of the connections.
     /// </summary>
-    private bool IsPathBlockedByConnection(WaterNode a, WaterNode b, Connection.Axis orientaion)
+    private bool IsPathBlockedByConnection(Terminal a, Terminal b, Connection.Axis orientaion)
     {
         //iterates through a existing connections to check if path blocked by connections
         if (orientaion == Connection.Axis.Horizontal)
         {
             foreach (Connection c in connections)
             {
-                if (a.gridX < c.startWaterNode.gridX && c.startWaterNode.gridX < b.gridX && c.startWaterNode.gridY < a.gridY && a.gridY < c.endWaterNode.gridY)
+                if (a.gridX < c.startTerminal.gridX && c.startTerminal.gridX < b.gridX && c.startTerminal.gridY < a.gridY && a.gridY < c.endTerminal.gridY)
                 {
                     return true;
                 }
@@ -189,7 +194,7 @@ public class ConnectionManager : MonoBehaviour
         {
             foreach (Connection c in connections)
             {
-                if (a.gridY < c.startWaterNode.gridY && c.startWaterNode.gridY < b.gridY && c.startWaterNode.gridX < a.gridX && a.gridX < c.endWaterNode.gridX)
+                if (a.gridY < c.startTerminal.gridY && c.startTerminal.gridY < b.gridY && c.startTerminal.gridX < a.gridX && a.gridX < c.endTerminal.gridX)
                 {
                     return true;
                 }
@@ -201,7 +206,7 @@ public class ConnectionManager : MonoBehaviour
     /// <summary>
     /// Called to initialise the connection
     /// </summary>
-    private Connection InitialiseConnection(WaterNode a, WaterNode b, Connection.Axis orientation)
+    private Connection InitialiseConnection(Terminal a, Terminal b, Connection.Axis orientation)
     {
         //position of the connection
         Vector2 pos = (a.transform.position + b.transform.position) / 2f;

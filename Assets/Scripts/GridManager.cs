@@ -3,26 +3,26 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Manages the grid of water nodes.
+/// Manages the grid of terminals.
 /// </summary>
 public class GridManger : MonoBehaviour
 {
-    //water node prefab
+    //terminal prefab
     [SerializeField]
-    private GameObject waterNodePrefab;
+    private GameObject terminalPrefab;
 
-    //size of the grid of Water Nodes
+    //size of the grid of terminals
     [SerializeField]
-    public int gridSize = 4;
+    public int gridSize;
 
-    public WaterNode[,] grid;
+    public Terminal[,] grid;
 
-    //screen, container and node spacing
+    //screen, container and terminal spacing
     public float spacingX, spacingY;
 
     private void Start()
     {
-        //Sets the spacing between the water node spawn points 
+        //Sets the spacing between the terminal spawn points 
         spacingX = 2f;
         spacingY = 2f;
 
@@ -36,22 +36,22 @@ public class GridManger : MonoBehaviour
     private void PopulateGrid()
     {
         //Initialises grid
-        grid = new WaterNode[gridSize,gridSize];
+        grid = new Terminal[gridSize,gridSize];
 
         for (int x = 0; x < gridSize; x++)
         {
             for (int y = 0; y < gridSize; y++)
             {
-                //position of the water node
+                //position of the terminal
                 Vector2 pos = new Vector2((x - (gridSize - 1) / 2f) * spacingX, (y - (gridSize - 1) / 2f) * spacingY);
 
                 //creates the water node
-                GameObject waterNodeObject = Instantiate(waterNodePrefab, pos, Quaternion.identity);
-                WaterNode waterNode = waterNodeObject.GetComponent<WaterNode>();
-                waterNode.SetUp(x, y, Random.Range(0, 8));
+                GameObject terminalObject = Instantiate(terminalPrefab, pos, Quaternion.identity);
+                Terminal terminal = terminalObject.GetComponent<Terminal>();
+                terminal.SetUp(x, y, Random.Range(0, 8));
 
-                //Add water node to grid
-                grid[x, y] = waterNode;
+                //Add terminal to grid
+                grid[x, y] = terminal;
             }
         }
     }

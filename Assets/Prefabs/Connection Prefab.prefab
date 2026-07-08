@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7428480912052423502}
   - component: {fileID: 7426809127845936292}
   m_Layer: 0
-  m_Name: Connection
+  m_Name: Connection Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,15 +83,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 836345497, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 1, y: 0.25}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!114 &7428480912052423502
 MonoBehaviour:
@@ -109,8 +109,8 @@ MonoBehaviour:
   startWaterNode: {fileID: 0}
   endWaterNode: {fileID: 0}
   doubleConnection: 0
-  singlePipe: {fileID: 836345497, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  doublePipe: {fileID: -1143387711, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  singlePipe: {fileID: 1316056759, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  doublePipe: {fileID: -130978848, guid: beb36814167b6b74786464bf71df687a, type: 3}
 --- !u!61 &7426809127845936292
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,10 +147,10 @@ BoxCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0.0625, y: 0.03125, z: 0.0625, w: 0.03125}
+    border: {x: 0.0625, y: 0.0625, z: 0.0625, w: 0.0625}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1, y: 0.25}
-    newSize: {x: 1, y: 0.25}
+    newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 2
     adaptiveTiling: 0

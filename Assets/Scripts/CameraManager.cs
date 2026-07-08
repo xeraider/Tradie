@@ -6,7 +6,7 @@ public class CameraManager : MonoBehaviour
     //main camera
     public Camera mainCamera;
 
-    //grid of waternodes
+    //grid of terminals
     [SerializeField]
     GridManger grid;
 

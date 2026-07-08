@@ -13,7 +13,7 @@ public class Connection : MonoBehaviour
     public Axis orientation;
 
     //connections with start being negative to end being positive
-    public WaterNode startWaterNode, endWaterNode;
+    public Terminal startTerminal, endTerminal;
 
     //length of the connection
     private int connectionLength;
@@ -28,10 +28,10 @@ public class Connection : MonoBehaviour
     /// <summary>
     /// Called to setup the connection and give it values.
     /// </summary>
-    public void Setup(WaterNode a, WaterNode b, Axis o, int size)
+    public void Setup(Terminal a, Terminal b, Axis o, int size)
     {
-        startWaterNode = a;
-        endWaterNode = b;
+        startTerminal = a;
+        endTerminal = b;
         orientation = o;
         connectionLength = size;
 
@@ -54,7 +54,7 @@ public class Connection : MonoBehaviour
             sr.sprite = doublePipe;
 
             //sets the name for debugging
-            name = startWaterNode.name + "=" + startWaterNode.name;
+            name = startTerminal.name + "=" + startTerminal.name;
         }
         else 
         {
@@ -64,7 +64,7 @@ public class Connection : MonoBehaviour
             sr.sprite = singlePipe;
 
             //sets the name for debugging
-            name = startWaterNode.name + "-" + startWaterNode.name;
+            name = startTerminal.name + "-" + startTerminal.name;
         }
     }
 }

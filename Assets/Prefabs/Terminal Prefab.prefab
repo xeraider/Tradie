@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4000139789420975874}
   - component: {fileID: 8713324017904695243}
   m_Layer: 0
-  m_Name: Water Node
+  m_Name: Terminal Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 8241030667795639492, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -91,7 +91,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4000139789420975874
 MonoBehaviour:
@@ -109,14 +109,24 @@ MonoBehaviour:
   gridY: 0
   connectionLimit: 0
   sprites:
-  - {fileID: 8241030667795639492, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: -584503316, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: -1186309407, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: 2071272420, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: -2096044656, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: 1389448158, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: 1085721460, guid: beb36814167b6b74786464bf71df687a, type: 3}
-  - {fileID: -454525842, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -602977005, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1357766302, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 883989167, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1643184280, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1083537197, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1434176870, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1940152864, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 411075533, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1972928, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -114036723, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -57746024, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -1039274604, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -1768997509, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 979991626, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1436656808, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 197765616, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: 1096580935, guid: beb36814167b6b74786464bf71df687a, type: 3}
+  - {fileID: -251250834, guid: beb36814167b6b74786464bf71df687a, type: 3}
 --- !u!61 &8713324017904695243
 BoxCollider2D:
   m_ObjectHideFlags: 0
