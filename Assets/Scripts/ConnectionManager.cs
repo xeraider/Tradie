@@ -1,256 +1,178 @@
-using System.Collections.Generic;
+
+using System;
 using UnityEngine;
 
+/// <summary>
+/// Handles Connections.
+/// </summary>
 public class ConnectionManager : MonoBehaviour
 {
+    //prefab for connection
     [SerializeField]
-    private GridManger gridManager;
+    private GameObject _connectionPrefab;
 
+    //terminal manager
     [SerializeField]
-    private GameObject connectionPrefab;
+    private TerminalManager _terminalManager;
+
+    //factory that makes connections
+    [SerializeField]
+    private ConnectionFactory _factory;
+
+    //validation for connections
+    private ConnectionRules _checker = new ConnectionRules();
+
+    //event for when a connection is made
+    public static event Action OnConnection;
 
     //the currently selected terminal
-    private Terminal selectedTerminal;
+    private Terminal _selectedTerminal;
 
-    //list of existing connections
-    private List<Connection> connections = new List<Connection>();
+    /// <summary>
+    /// Called to set the connection manager.
+    /// </summary>
+    public void SetValidator()
+    {
+        if(_checker.AllConnections != null) 
+        { 
+            foreach (Connection c in _checker.AllConnections)
+            {
+                _factory.RemoveConnection(c);
+            }
+
+            _checker.AllConnections.Clear();
+        }
+
+        _checker.Set(_terminalManager.Grid);
+    }
 
     /// <summary>
     /// Called to select the terminal from the touch input of a player.
     /// </summary>
-    public void SelectTerminal(Terminal targetTerminal)
+    public void SelectTerminal(Terminal t)
     {
-        //If tapped on empty space then set the unselect the selected terminal
-        if (targetTerminal == null)
+        //checks null terminal
+        if (t == null) 
         {
-            if (selectedTerminal) selectedTerminal.IsSelected = false;
-            selectedTerminal = null;
+            SelectedTerminal = null;
+            return; 
+        }
+
+        //sets selected terminal if there is nothing selected
+        if (SelectedTerminal == null)
+        {
+            SelectedTerminal = t;
             return;
         }
 
-        //If the selected terminal is the one being tapped on then do nothing
-        if (selectedTerminal == targetTerminal)
+        //checks if connection is diagonal
+        if (SelectedTerminal.GridX != t.GridX && SelectedTerminal.GridY != t.GridY)
+        {
+            SelectedTerminal = t;
+            return;
+        }
+
+        //checks if same terminal is selected
+        if (SelectedTerminal == t)
         {
             return;
         }
 
-        //if their is no selected terminal then set it to the tapped terminal
-        if (selectedTerminal == null)
-        {
-            selectedTerminal = targetTerminal;
-            selectedTerminal.IsSelected = true;
-            return;
-        }
+        //creates the connection and resets the selected terminal
+        TryConnect(t);
 
-        //Checks and makes sure the connections are not diagonal
-        if (selectedTerminal.gridX != targetTerminal.gridX && selectedTerminal.gridY != targetTerminal.gridY)
-        {
-            selectedTerminal.IsSelected = false;
-            selectedTerminal = null;
-            return;
-        }
-
-        //Creates the connection and resets the selected terminal.
-        TryConnect(selectedTerminal, targetTerminal);
-        selectedTerminal.IsSelected = false;
-        selectedTerminal = null;
+        //unselect terminal
+        SelectedTerminal = null;
+        
     }
 
     /// <summary>
     /// Called to select the connection from the touch input of a player.
     /// </summary>
-    public void TapConnection(Connection c)
+    public void SelectConnection(Connection c)
     {
-        UpdateConnection(c);
-        if (selectedTerminal) selectedTerminal.IsSelected = false;
-        selectedTerminal = null;
-    }
-
-    /// <summary>
-    /// Called to try connect two water terminals. The connection will always go from the negative to the positive terminal position.
-    /// </summary>
-    public void TryConnect(Terminal a, Terminal b)
-    {
-        //orientation of the connection
-        Connection.Axis orientation = GetOrientation(a, b);
-
-        //connecting water terminals that have been ordered by position
-        (Terminal, Terminal) orderedTerminals = OrderTerminals(a, b, orientation);
-        a = orderedTerminals.Item1;
-        b = orderedTerminals.Item2;
-
-        //checks if there are water terminals in the way of the connections
-        if (IsPathBlockedByTerminal(a, b, orientation)) return;
-
-        //checks if there are water terminals in the way of the connections
-        if (IsPathBlockedByConnection(a, b, orientation)) return;
-
-        //checks if connection already exists on the faces of the water terminal
-        if (ConnectionExists(a, b, orientation)) return;
-
-        //add connection to the existing connections list
-        Connection c = InitialiseConnection(a, b, orientation);
-        connections.Add(c);
-    }
-
-    /// <summary>
-    /// Called to get the orientation of a connection.
-    /// </summary>
-    private Connection.Axis GetOrientation(Terminal a, Terminal b)
-    {
-        if (a.gridX != b.gridX)
+        //changes selected connection according to the state
+        switch (c.ConnectionState)
         {
-            return Connection.Axis.Horizontal;
+            //doubles the connection
+            case Connection.State.Single:
+                _factory.DoubleConnection(c);
+                OnConnection?.Invoke();
+                break;
+            //removes the connection
+            case Connection.State.Double:
+                _checker.AllConnections.Remove(c);
+                _factory.RemoveConnection(c);
+                break;
         }
-        return Connection.Axis.Vertical;
+
+        //unselect terminal
+        SelectedTerminal = null;
     }
 
     /// <summary>
-    /// Called to order the water terminals according to direction.
+    /// Called to try connect the terminals.
     /// </summary>
-    private (Terminal, Terminal) OrderTerminals(Terminal a, Terminal b, Connection.Axis orientaion)
+    private void TryConnect(Terminal t)
     {
-        //horizontal or vertical
-        if (orientaion == Connection.Axis.Horizontal) 
+        //gets the status of the connection if there is one
+        Connection.State connectionStatus = _checker.Validate(_selectedTerminal, t, out Terminal startTerminal, out Terminal endTerminal, out Connection.Axis orientation, out Connection ExistingConnection);
+
+        switch (connectionStatus)
         {
-            //sets the higher value to the right
-            return (a.gridX > b.gridX) ? (b, a) : (a, b);
-        }
-        else
-        {
-            //sets the higher value to the right
-            return (a.gridY > b.gridY) ? (b, a) : (a, b);
+            //skip due to invalid connection
+            case Connection.State.Invalid:
+                break;
+            //create a connection
+            case Connection.State.None:
+                _checker.AllConnections.Add(_factory.InitialiseConnection(startTerminal, endTerminal, orientation, _connectionPrefab));
+                OnConnection?.Invoke();
+                break;
+            //doubles the connection
+            case Connection.State.Single:
+                _factory.DoubleConnection(ExistingConnection);
+                OnConnection?.Invoke();
+                break;
+            //removes the connection
+            case Connection.State.Double:
+                _checker.AllConnections.Remove(ExistingConnection);
+                _factory.RemoveConnection(ExistingConnection);
+                break;
         }
     }
 
     /// <summary>
-    /// Called to see if there is already a connection that exists.
+    /// Called to check the win conditions.
     /// </summary>
-    private bool ConnectionExists(Terminal a, Terminal b, Connection.Axis orientaion)
+    public bool CheckWin()
     {
-        //iterates through a list of connections
-        foreach (Connection c in connections) 
+        //checks to see if every terminal has the correct amount of connections.
+        foreach (Terminal t in _terminalManager.Grid)
         {
-            //if the connection contains the any of the terminals in the correct position and if orientation is the same
-            if ((c.startTerminal == a || c.endTerminal == b) && orientaion == c.orientation)
+            if (t == null) continue;
+            if (t.CurrentConnections != t.MaxConnections) return false;
+        }
+
+        //checks to see if terminals is interconnected.
+        return _terminalManager.AreAllTerminalsConnected();
+    }
+
+    private Terminal SelectedTerminal
+    {
+        get => _selectedTerminal;
+        set
+        {
+            if (_selectedTerminal != null)
             {
-                //if the exact same connection exists
-                if (c.startTerminal == a && c.endTerminal == b)
-                {
-                    UpdateConnection(c);
-                }
-                return true;
+                _selectedTerminal.Selected = false;
             }
-        }
-        return false;
-    }
 
-    /// <summary>
-    /// Called to see if there are water terminals in the way of the connections.
-    /// </summary>
-    private bool IsPathBlockedByTerminal(Terminal a, Terminal b, Connection.Axis orientaion)
-    {
-        //iterates through a grid to check if path blocked
-        if (orientaion == Connection.Axis.Horizontal)
-        {
-            for (int i = a.gridX + 1; i < b.gridX; i++)
+            _selectedTerminal = value;
+
+            if (_selectedTerminal != null)
             {
-                if (gridManager.grid[i,a.gridY] != null)
-                {
-                    return true;
-                }
+                _selectedTerminal.Selected = true;
             }
-        }
-        else if (orientaion == Connection.Axis.Vertical)
-        {
-            for (int i = a.gridY + 1; i < b.gridY; i++)
-            {
-                if (gridManager.grid[a.gridX, i] != null)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Called to see if there are connections in the way of the connections.
-    /// </summary>
-    private bool IsPathBlockedByConnection(Terminal a, Terminal b, Connection.Axis orientaion)
-    {
-        //iterates through a existing connections to check if path blocked by connections
-        if (orientaion == Connection.Axis.Horizontal)
-        {
-            foreach (Connection c in connections)
-            {
-                if (a.gridX < c.startTerminal.gridX && c.startTerminal.gridX < b.gridX && c.startTerminal.gridY < a.gridY && a.gridY < c.endTerminal.gridY)
-                {
-                    return true;
-                }
-            }
-        }
-        else if (orientaion == Connection.Axis.Vertical)
-        {
-            foreach (Connection c in connections)
-            {
-                if (a.gridY < c.startTerminal.gridY && c.startTerminal.gridY < b.gridY && c.startTerminal.gridX < a.gridX && a.gridX < c.endTerminal.gridX)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Called to initialise the connection
-    /// </summary>
-    private Connection InitialiseConnection(Terminal a, Terminal b, Connection.Axis orientation)
-    {
-        //position of the connection
-        Vector2 pos = (a.transform.position + b.transform.position) / 2f;
-
-        Quaternion pipeOrientation;
-        int pipeLength;
-
-        //sets pipe orientation and length
-        if (orientation == Connection.Axis.Vertical)
-        {
-            pipeOrientation = Quaternion.Euler(0, 0, 90);
-            pipeLength = b.gridY - a.gridY;
-        }
-        else {
-            pipeOrientation = Quaternion.identity;
-            pipeLength = b.gridX - a.gridX;
-        }
-
-        //creates connection
-        GameObject connectionObject = Instantiate(connectionPrefab, pos, pipeOrientation);
-        Connection c = connectionObject.GetComponent<Connection>();
-
-        //Set up for connection
-        c.Setup(a, b, orientation, pipeLength);
-
-        return c;
-    }
-
-    /// <summary>
-    /// Called to update an existing connection.
-    /// </summary>
-    private void UpdateConnection(Connection c)
-    {
-        //if connection is double then remove the connection
-        if (c.doubleConnection)
-        {
-            Destroy(c.gameObject);
-            connections.Remove(c);
-        }
-        //if connection is single then double the connection
-        else
-        {
-            c.doubleConnection = true;
-            c.UpdateSprite();
         }
     }
 }

@@ -1,25 +1,37 @@
+using System.Data;
 using UnityEngine;
 
+/// <summary>
+/// Represents Connection.
+/// </summary>
 public class Connection : MonoBehaviour
 {
+    //enum for the state
+    public enum State
+    {
+        Single,
+        Double,
+        None,
+        Invalid
+    }
+
+    private State _connectionState;
+
     //enum for the direction
     public enum Axis
     {
         Horizontal,
         Vertical
     }
-
-    //direction of the connection
-    public Axis orientation;
-
-    //connections with start being negative to end being positive
-    public Terminal startTerminal, endTerminal;
+    public Axis Orientation { get; private set; }
 
     //length of the connection
-    private int connectionLength;
+    private int _connectionLength;
 
-    //connection count
-    public bool doubleConnection;
+    //terminals
+    public Terminal StartTerminal { get; set; }
+    public Terminal EndTerminal { get; set; }
+
 
     //sprites
     [SerializeField]
@@ -30,10 +42,10 @@ public class Connection : MonoBehaviour
     /// </summary>
     public void Setup(Terminal a, Terminal b, Axis o, int size)
     {
-        startTerminal = a;
-        endTerminal = b;
-        orientation = o;
-        connectionLength = size;
+        StartTerminal = a;
+        EndTerminal = b;
+        Orientation = o;
+        _connectionLength = size;
 
         UpdateSprite();
     }
@@ -46,25 +58,29 @@ public class Connection : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         BoxCollider2D bc = GetComponent<BoxCollider2D>();
 
-        if (doubleConnection)
+        if (ConnectionState == State.Double)
         {
             //change size and sprite to double pipe
-            sr.size = new Vector2(connectionLength * 2 - 1, 0.5f);
-            bc.size = new Vector2(connectionLength * 2 - 1, 0.5f);
             sr.sprite = doublePipe;
-
-            //sets the name for debugging
-            name = startTerminal.name + "=" + startTerminal.name;
+            sr.size = new Vector2(_connectionLength * 2 - 1, 0.5f);
+            bc.size = new Vector2(_connectionLength * 2 - 1, 0.5f);
         }
-        else 
+        else if (ConnectionState == State.Single)
         {
             //change size and sprite to single pipe
-            sr.size = new Vector2(connectionLength * 2 - 1, 0.25f);
-            bc.size = new Vector2(connectionLength * 2 - 1, 0.25f);
             sr.sprite = singlePipe;
+            sr.size = new Vector2(_connectionLength * 2 - 1, 0.25f);
+            bc.size = new Vector2(_connectionLength * 2 - 1, 0.25f);
+        }
+    }
 
-            //sets the name for debugging
-            name = startTerminal.name + "-" + startTerminal.name;
+    public State ConnectionState
+    {
+        get => _connectionState;
+        set
+        {
+            _connectionState = value;
+            UpdateSprite();
         }
     }
 }

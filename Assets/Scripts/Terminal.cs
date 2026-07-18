@@ -1,42 +1,41 @@
 using UnityEngine;
 
+/// <summary>
+/// Represents a terminal.
+/// </summary>
 public class Terminal : MonoBehaviour
 {
-    //grid position
-    public int gridX, gridY;
-
-    //the number of connections the terminal can connect to
-    public int connectionLimit;
-
-    private bool isSelected;
-
     //sprites
     [SerializeField]
     private Sprite[] sprites;
 
+    //grid position
+    public int GridX { get; private set; }
+    public int GridY { get; private set; }
+
+    //connections of terminal from up "0" going clockwise
+    public Connection[] Connections = new Connection[4]; 
+
+    //the number of connections the terminal can connect to
+    private int _currentConnections, _maxConnections;
+
+    //selected terminal
+    private bool _selected;
+
     /// <summary>
     /// Called to setup the terminal and give it values.
     /// </summary>
-    public void SetUp(int x, int y, int ConnectionLimit)
+    public void SetUp(int x, int y, int MaxConnections)
     {
         //sets variaables for gridPosition and the connection limit
-        gridX = x;
-        gridY = y;
-        connectionLimit = Mathf.Clamp(ConnectionLimit, 1, 8);
+        GridX = x;
+        GridY = y;
+        _maxConnections = MaxConnections;
 
         name = "Terminal(" + x + "," + y + ")";
 
         //updates the sprite according to ConnectionLimit
         UpdateSprite();
-    }
-
-    public bool IsSelected {
-        get => isSelected;
-        set
-        {
-            isSelected = value;
-            UpdateSprite();
-        }
     }
 
     /// <summary>
@@ -46,15 +45,30 @@ public class Terminal : MonoBehaviour
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
 
-        if (isSelected) 
-        {
-            //sets selected sprite 
-            sr.sprite = sprites[connectionLimit + 8];
-            return;
-        }
-
         //sets sprite 
-        sr.sprite = sprites[connectionLimit - 1];
+        if (_selected) sr.sprite = sprites[_maxConnections + 8];
+        else sr.sprite = sprites[_maxConnections - 1];
+    }
+
+    public int CurrentConnections
+    {
+        get => _currentConnections;
+        set => _currentConnections = Mathf.Clamp(value, 0, 8);
+    }
+
+    public int MaxConnections
+    {
+        get => _maxConnections;
+    }
+
+    public bool Selected
+    {
+        get => _selected;
+        set 
+        {
+            _selected = value;
+            UpdateSprite() ;
+        }
     }
 }
 

@@ -4,5 +4,5 @@ using UnityEngine;
 public class LevelScriptableObject : ScriptableObject
 {
     public int gridSize;
-    public Terminal[] terminals;
+    public TerminalData[] terminalData;
 }

@@ -1,34 +1,47 @@
-using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Handles Camera.
+/// </summary>
 public class CameraManager : MonoBehaviour
 {
     //main camera
-    public Camera mainCamera;
-
-    //grid of terminals
-    [SerializeField]
-    GridManger grid;
+    public Camera MainCamera;
 
     //variables for zoom and pan
-    private float targetSize, cameraSpeed, panSpeed, minSize, maxSize;
+    private float aspectRatio, targetSize, zoomSpeed, panSpeed, minSize, maxSize;
     private Vector3 targetPosition;
 
-    void Awake()
+    public void Awake()
     {
-        //defines the camera and aspect ratio 
-        mainCamera = Camera.main;
-        float aspectRatio = (float)Screen.width / Screen.height;
+        //sets main camera
+        MainCamera = Camera.main;
 
-        //sets the zoom variables
+        //sets aspect ratio and minimum camera size
+        aspectRatio = MainCamera.aspect;
         minSize = 3 / aspectRatio;
-        maxSize = grid.gridSize / aspectRatio;
-        targetSize = maxSize;
-        cameraSpeed = 15f;
+
+        //sets zoom and pan speeds
+        zoomSpeed = 15f;
         panSpeed = 25f;
 
-        //sets the camera size 
-        mainCamera.orthographicSize = targetSize;
+        SetCamera(minSize);
+    }
+
+    /// <summary>
+    /// Called when the camera is resized.
+    /// </summary>
+    public void SetCamera(float GridSize)
+    {
+        //sets the max size and target size for camera
+        maxSize = Mathf.Max(minSize, GridSize / aspectRatio);
+        targetSize = maxSize;
+
+        //sets the camera size
+        MainCamera.orthographicSize = targetSize;
+
+        //centres camera 
+        MainCamera.transform.position = new Vector3(0, 0, MainCamera.transform.position.z);
     }
 
     /// <summary>
@@ -41,7 +54,10 @@ public class CameraManager : MonoBehaviour
         targetSize = Mathf.Clamp(targetSize, minSize, maxSize);
 
         //applies delta to camera with smoothening
-        mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetSize, cameraSpeed * Time.deltaTime);
+        MainCamera.orthographicSize = Mathf.Lerp(MainCamera.orthographicSize, targetSize, zoomSpeed * Time.deltaTime);
+
+        //centers the camera on max zoom threshhold
+        if (MainCamera.orthographicSize >= (maxSize - 0.5)) MainCamera.transform.position = new Vector3(0,0, MainCamera.transform.position.z);
     }
 
     /// <summary>
@@ -49,15 +65,16 @@ public class CameraManager : MonoBehaviour
     /// </summary>
     public void ApplyPan(Vector2 delta)
     {
-        if (mainCamera.orthographicSize == maxSize) return;
+        //disables pan on max zoom threshhold
+        if (MainCamera.orthographicSize >= (maxSize - 0.5)) return;
 
         //bounds
-        float vertPanRange = maxSize - mainCamera.orthographicSize;
-        float horzPanRange = vertPanRange * mainCamera.aspect;
+        float vertPanRange = maxSize - MainCamera.orthographicSize;
+        float horzPanRange = vertPanRange * MainCamera.aspect;
 
         //sets target size according to the fingers' distance
-        Vector3 worldDelta = mainCamera.ScreenToWorldPoint(Vector3.zero) - mainCamera.ScreenToWorldPoint((Vector3)delta);
-        targetPosition = mainCamera.transform.position;
+        Vector3 worldDelta = MainCamera.ScreenToWorldPoint(Vector3.zero) - MainCamera.ScreenToWorldPoint((Vector3)delta);
+        targetPosition = MainCamera.transform.position;
         targetPosition += worldDelta;
 
         //clamps range with bounds
@@ -65,6 +82,6 @@ public class CameraManager : MonoBehaviour
         targetPosition.y = Mathf.Clamp(targetPosition.y, -vertPanRange, vertPanRange);
 
         //applies delta to camera with smoothening
-        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, panSpeed * Time.deltaTime);
+        MainCamera.transform.position = Vector3.Lerp(MainCamera.transform.position, targetPosition, panSpeed * Time.deltaTime);
     }
 }

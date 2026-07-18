@@ -1,19 +1,21 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 /// <summary>
 /// Handles touch input.
 /// </summary>
 public class TouchManager : MonoBehaviour
 {
+    //manages connections
     [SerializeField]
-    private ConnectionManager connections;
+    private ConnectionManager connectionManager;
 
+    //manages camera
     [SerializeField]
     private CameraManager cameraManager;
 
+    //player input
     private PlayerInput playerInput;
 
     //input actions for touch
@@ -53,7 +55,7 @@ public class TouchManager : MonoBehaviour
     private void Press()
     {
         //gets the postion of the touch according to the world positions
-        Vector2 touchPosition = cameraManager.mainCamera.ScreenToWorldPoint(
+        Vector2 touchPosition = cameraManager.MainCamera.ScreenToWorldPoint(
             touchPositionAction.ReadValue<Vector2>());
 
         //finds the terminal that is tapped
@@ -62,19 +64,19 @@ public class TouchManager : MonoBehaviour
         //if nothing is selected
         if (target == null)
         {
-            connections.SelectTerminal(null);
+            connectionManager.SelectTerminal(null);
             return;
         }
 
         //processes selection
         if (target.TryGetComponent(out Terminal terminal))
         {
-            connections.SelectTerminal(terminal);
+            connectionManager.SelectTerminal(terminal);
             return;
         }
         else if (target.TryGetComponent(out Connection connection))
         {
-            connections.TapConnection(connection);
+            connectionManager.SelectConnection(connection);
             return;
         }
     }
@@ -131,7 +133,6 @@ public class TouchManager : MonoBehaviour
                 previousTouchPosition = touchPositionAction.ReadValue<Vector2>();
             }
             else {
-
                 //gets change of position of the first finger
                 Vector2 currentTouchPosition = touchPositionAction.ReadValue<Vector2>();
                 Vector2 delta = currentTouchPosition - previousTouchPosition;
